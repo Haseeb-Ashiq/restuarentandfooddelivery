@@ -1,6 +1,6 @@
 const express = require('express');
 const { authMiddleware } = require('../middlewares/auth.middleware');
-const { deleteCustomer, updateCustomer, getCustomer, getCustomers } = require('../controllers/customer.controller');
+const { deleteCustomer, updateCustomer, getCustomer, getCustomers, login, register } = require('../controllers/customer.controller');
 
 customerRouter = express.Router();
 

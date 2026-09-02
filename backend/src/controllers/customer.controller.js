@@ -1,10 +1,12 @@
 const customerModels = require("../models/customer.models");
 const bcrypt = require('bcryptjs');
 const { JwtSign } = require("../utils/util");
-try {
-    return await customerModels.findOne(params).exec()
-} catch (error) {
-    console.log(error.message)
+const isUserExist=async (params)=>{
+    try {
+        return await customerModels.findOne(params).exec()
+    } catch (error) {
+        console.log(error.message)
+    }
 }
 
 
