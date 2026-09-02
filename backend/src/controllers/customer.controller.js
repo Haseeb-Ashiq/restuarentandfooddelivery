@@ -1,24 +1,22 @@
-const userModels = require("../models/user.models");
+const customerModels = require("../models/customer.models");
 const bcrypt = require('bcryptjs');
 const { JwtSign } = require("../utils/util");
-
-const isUserExist = async (params) => {
-    try {
-        return await userModels.findOne(params).exec()
-    } catch (error) {
-        console.log(error.message)
-    }
+try {
+    return await customerModels.findOne(params).exec()
+} catch (error) {
+    console.log(error.message)
 }
+
+
 
 const register = async (req, res) => {
     try {
         const { name, email, password, role, phone } = req.body;
         const hashpassword = await bcrypt.hash(password, 10);
-        const user = await userModels.create({
+        const user = await customerModels.create({
             name,
             email,
             password: hashpassword,
-            role,
             phone,
             isActive: false
         })
@@ -27,7 +25,6 @@ const register = async (req, res) => {
         return res.status(500).json(error.message)
     }
 }
-
 
 const login = async (req, res) => {
     try {
@@ -38,7 +35,7 @@ const login = async (req, res) => {
         isPasswordMatched = await bcrypt.compare(password, user.password)
         if (!isPasswordMatched) throw new Error('Password not correct.')
         const token = await JwtSign({ _id: user._id, email: user.email }, { expiresIn: '1h' })
-        res.cookie('user-token', token, {
+        res.cookie('customer-token', token, {
             httpOnly: true,
             maxAge: 60 * 60,
             secure: false
@@ -53,10 +50,9 @@ const login = async (req, res) => {
     }
 }
 
-
-const getUsers = async (req, res) => {
+const getCustomers = async (req, res) => {
     try {
-        const result = await userModels.aggregate([
+        const result = await customerModels.aggregate([
             {
                 $facet: {
                     users: [
@@ -68,42 +64,40 @@ const getUsers = async (req, res) => {
                 }
             }
         ]);
-        return res.status(200).json({ data: { users: result[0].users, count: result[0].totalCount } })
+        return res.status(200).json({ data: { customers: result[0].users, count: result[0].totalCount } })
     } catch (error) {
         return res.status(500).json(error.message)
     }
 }
 
-
-const getUser = async (req, res) => {
+const getCustomer = async (req, res) => {
     try {
-        const user = await userModels.findById(req.params.id).select('-password').exec()
-        return res.status(200).json({ data: { user } })
+        const customer = await customerModels.findById(req.params.id).select('-password').exec()
+        return res.status(200).json({ data: { customer } })
     } catch (error) {
         return res.status(500).json(error.message)
     }
 }
 
-
-const updateUser = async (req, res) => {
+const updateCustomer = async (req, res) => {
     try {
         const id = req.params.id;
         if (!isUserExist({ _id: id })) throw new Error("User not found.")
-        const updatedUser = await userModels.findByIdAndUpdate(id, { ...req.body }, { new: true }).exec();
-        return res.status(200).json({ data: { updatedUser } })
+        const updatedCustomer = await customerModels.findByIdAndUpdate(id, { ...req.body }, { new: true }).exec();
+        return res.status(200).json({ data: { updatedCustomer } })
     } catch (error) {
         return res.status(500).json(error.message)
     }
 }
 
 
-const deleteUser = async (req, res) => {
+const deleteCustomer = async (req, res) => {
     try {
-        await userModels.findByIdAndDelete(req.params.id).exec();
-        return res.status(201).json({ msg: 'user deleted.' })
+        await customerModels.findByIdAndDelete(req.params.id).exec();
+        return res.status(201).json({ msg: 'customer deleted.' })
     } catch (error) {
         return res.status(500).json(error.message)
     }
 }
 
-module.exports = { register, getUsers, getUser, updateUser, deleteUser, login }
+module.exports = { register, getCustomers, getCustomer, updateCustomer, deleteCustomer, login }
