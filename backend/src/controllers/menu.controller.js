@@ -21,10 +21,10 @@ const addMenu = async (req, res) => {
         const file = req.files
         const menu = await menuModels.create({
             name,
-            catagory,
+            category:catagory,
             description,
             price,
-            image: file.map(f => `localhost:5000/public/${f.filename}`)
+            images: file.map(f => `localhost:5000/public/${f.filename}`)
         })
         return res.status(201).json({ data: { menu } })
     } catch (error) {
