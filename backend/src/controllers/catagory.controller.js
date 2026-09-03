@@ -1,6 +1,11 @@
 const catagoryModels = require("../models/catagory.models");
-const bcrypt = require('bcryptjs');
-const { JwtSign } = require("../utils/util");
+
+/**
+ * @function isCatagoryExist to find already existed catagories
+ * @param {*} params 
+ * @returns if catagory exist true else false
+ */
+
 
 const isCatagoryExist = async (params) => {
     try {
