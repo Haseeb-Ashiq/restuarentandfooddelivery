@@ -8,7 +8,7 @@ const tableSchema = new mongoose.Schema({
     enum: ['available', 'occupied', 'reserved', 'out_of_service'], 
     default: 'available' 
   },
-  currentOrder: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' }
+  // currentOrder: { type: mongoose.Schema.Types.ObjectId, ref: 'Order' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Table', tableSchema);
