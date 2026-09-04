@@ -6,7 +6,7 @@ customerRouter = express.Router();
 
 customerRouter.post('/register', register);
 customerRouter.post('/customer-login',login);
-customerRouter.get('/get-customers', authMiddleware, getCustomers);
+customerRouter.get('/get-customers', getCustomers);
 customerRouter.get('/get-customer/:id', authMiddleware, getCustomer);
 customerRouter.patch('/update-customer/:id', authMiddleware, updateCustomer);
 customerRouter.delete('/delete-customer/:id', authMiddleware, deleteCustomer);

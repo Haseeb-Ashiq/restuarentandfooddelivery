@@ -27,7 +27,7 @@ const upload = multer({
 menuRouter = express.Router();
 
 menuRouter.post('/add-menu', upload.array('image'), addMenu);
-menuRouter.get('/get-menues', authMiddleware, getMenues);
+menuRouter.get('/get-menues', getMenues);
 menuRouter.get('/get-menu/:id', authMiddleware, getMenu);
 menuRouter.patch('/update-menu/:id', authMiddleware, updateMenu);
 menuRouter.delete('/delete-menu/:id', authMiddleware, deleteMenu);

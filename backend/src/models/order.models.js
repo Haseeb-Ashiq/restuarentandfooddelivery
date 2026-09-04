@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema({
     default: 'pending' 
   },
   cancelReason: { type: String },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Staff who took the order
+  // createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Staff who took the order
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

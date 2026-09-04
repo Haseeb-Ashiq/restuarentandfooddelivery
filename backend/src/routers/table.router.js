@@ -4,8 +4,8 @@ const { addTable, getTables, getTable, updateTable, deleteTable } = require('../
 
 tableRouter = express.Router();
 
-tableRouter.post('/add-table', authMiddleware, addTable);
-tableRouter.get('/get-tables', authMiddleware, getTables);
+tableRouter.post('/add-table', addTable);
+tableRouter.get('/get-tables', getTables);
 tableRouter.get('/get-table/:id', authMiddleware, getTable);
 tableRouter.patch('/update-table/:id', authMiddleware, updateTable);
 tableRouter.delete('/delete-table/:id', authMiddleware, deleteTable);

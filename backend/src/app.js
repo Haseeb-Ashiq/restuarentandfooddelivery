@@ -7,6 +7,7 @@ const customerRouter = require('./routers/customer.router');
 const catagoryRouter = require('./routers/catagory.router');
 const menuRouter = require('./routers/menu.router');
 const tableRouter = require('./routers/table.router');
+const orderRouter = require('./routers/order.router');
 const dbConnection = require('./utils/db');
 const app = express();
 dbConnection();
@@ -23,5 +24,6 @@ app.use('/api/v1/customer', customerRouter);
 app.use('/api/v1/catagory', catagoryRouter);
 app.use('/api/v1/menu', menuRouter);
 app.use('/api/v1/table', tableRouter);
+app.use('/api/v1/order', orderRouter);
 
 module.exports = app;
