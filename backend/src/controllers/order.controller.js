@@ -1,5 +1,6 @@
 const orderModels = require("../models/order.models");
 const { v4 } = require('uuid');
+const redisClient = require("../utils/redis");
 const addOrder = async (req, res) => {
     try {
         const { items, customer, table, orderType } = req.body;
@@ -19,6 +20,10 @@ const addOrder = async (req, res) => {
                         { path: 'table', select: 'tableNumber capacity' }
                     ]))
 
+        const keys=await redisClient.keys('orders:*');
+        if(keys.length > 0){
+            await redisClient.del(...keys);
+        }
         return res.status(201).json({ data: { order } })
     } catch (error) {
         return res.status(500).json(error.message);
@@ -30,10 +35,21 @@ const addOrder = async (req, res) => {
 
 const getOrders = async (req, res) => {
     try {
+        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+        const limit = Math.max(1, parseInt(req.query.limit, 10) || 10);
+        const skip = (page - 1) * limit;
+        let cachekey = `orders:page:${page}:limit:${limit}`;
+        let cachedData = await redisClient.get(cachekey);
+        if (cachedData) {
+            return res.status(201).json(JSON.parse(cachedData))
+        }
         const result = await orderModels.aggregate([
             {
                 $facet: {
                     orders: [
+                        { $sort: { createdAt: -1 } },
+                        { $skip: skip },
+                        { $limit: limit }
                         // { $project: { password: 0, token: 0 } } // Excludes password field
                     ],
                     totalCount: [
@@ -42,7 +58,22 @@ const getOrders = async (req, res) => {
                 }
             }
         ]);
-        return res.status(200).json({ data: { orders: result[0].orders, count: result[0].totalCount } })
+        const totalOrders = result[0].totalCount[0]?.count || 0;
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        const responseData = {
+            data: {
+                orders: result[0].orders,
+                pagination: {
+                    totalOrders,
+                    totalPages,
+                    currentPage: page,
+                    limit
+                }
+            }
+        };
+        await redisClient.setex(cachekey, 3600, JSON.stringify(responseData));
+        return res.status(200).json(responseData)
     } catch (error) {
         return res.status(500).json(error.message)
     }
