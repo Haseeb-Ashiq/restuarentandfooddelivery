@@ -2,7 +2,7 @@ const Redis = require('ioredis');
 
 // Determine host based on environment (default to localhost for host machine)
 const redisHost = process.env.REDIS_HOST || '127.0.0.1';
-const redisPort = process.env.REDIS_PORT || 6379;
+const redisPort = parseInt(process.env.REDIS_PORT, 10) || 6379;
 
 const redisClient = new Redis({
   host: redisHost,
